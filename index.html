@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Unlock Your Alter Ego</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,85 +14,114 @@
     --bg-dark: #0f0f0f;
     --text-white: #ffffff;
     --text-gray: #a0a0a0;
-    --transition-speed: 0.5s;
     --font-primary: Helvetica, Arial, sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
 }
 
+/* --- Base --- */
 body {
     margin: 0;
     font-family: var(--font-primary);
     background: var(--bg-dark);
     color: var(--text-white);
     height: 100vh;
-    display: flex;
-    justify-content: center;
+    overflow-x: hidden;
 }
 
 .alter-ego-section {
-    width: 100%;
-    max-width: 1200px;
-    padding: 40px 20px;
     position: relative;
+    min-height: 100vh;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
+/* --- Ambient Glow --- */
 .ambient-glow {
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle, rgba(255,255,255,0.04), transparent 60%);
+    background: radial-gradient(circle at center, rgba(255,255,255,0.04), transparent 60%);
+    transition: background 0.8s ease;
     pointer-events: none;
+    z-index: 0;
 }
 
+/* --- Header --- */
 .header-content {
     text-align: center;
+    z-index: 2;
     margin-bottom: 30px;
 }
 
 h1 {
-    font-size: 3.5rem;
+    font-size: 3.6rem;
     font-weight: 800;
     margin: 0;
 }
 
 .subtext {
     color: var(--text-gray);
-    margin-top: 12px;
+    margin-top: 14px;
 }
 
+/* --- Characters --- */
 .character-row {
     display: flex;
-    justify-content: center;
     gap: 20px;
+    justify-content: center;
+    align-items: flex-end;
     margin-bottom: 40px;
+    z-index: 2;
 }
 
 .char-card {
     cursor: pointer;
-    filter: grayscale(80%) brightness(0.6);
-    transition: all 0.4s ease;
+    transition: all 0.5s ease;
+    transform-origin: bottom center;
 }
 
 .char-card img {
-    height: 300px;
+    height: 320px;
     display: block;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.6));
+    animation: float 6s ease-in-out infinite;
+}
+
+.char-card:nth-child(2) img { animation-delay: 2s; }
+.char-card:nth-child(3) img { animation-delay: 1s; }
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
 }
 
 .char-card.active {
-    filter: none;
-    transform: scale(1.1);
+    transform: scale(1.15);
+    filter: brightness(1.1);
 }
 
 .char-card.inactive {
-    opacity: 0.4;
+    filter: grayscale(100%) brightness(0.4) blur(1px);
+    transform: scale(0.95);
+    opacity: 0.7;
 }
 
+/* --- Details Panel --- */
 .details-panel {
+    max-width: 1100px;
+    width: 100%;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 40px;
+    background: rgba(20,20,20,0.6);
+    backdrop-filter: blur(24px);
+    padding: 30px 50px;
+    border-radius: 24px 24px 0 0;
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(30px);
     transition: all 0.5s ease;
+    z-index: 2;
 }
 
 .details-panel.visible {
@@ -103,9 +132,10 @@ h1 {
 h3 {
     font-family: var(--font-mono);
     font-size: 0.7rem;
-    letter-spacing: 0.15em;
     text-transform: uppercase;
+    letter-spacing: 0.15em;
     color: var(--text-gray);
+    margin-bottom: 16px;
 }
 
 .vibe-text {
@@ -113,25 +143,28 @@ h3 {
     font-weight: 700;
 }
 
+/* --- Abilities --- */
 ul {
     list-style: none;
     padding: 0;
+    margin: 0;
 }
 
 li {
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
 .ability-name {
     font-family: var(--font-mono);
-    font-weight: 700;
+    font-weight: 800;
 }
 
+/* --- Paddle --- */
 .paddle-preview-img {
     width: 100%;
     height: 140px;
     object-fit: contain;
-    animation: fadeInPaddle 0.5s forwards;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.6));
 }
 
 @keyframes fadeInPaddle {
@@ -140,14 +173,15 @@ li {
 }
 
 .btn-cta {
-    margin-top: 15px;
+    margin-top: 14px;
     display: inline-block;
+    padding: 12px 22px;
     background: white;
     color: black;
-    padding: 10px 18px;
+    text-decoration: none;
     font-family: var(--font-mono);
     font-size: 0.75rem;
-    text-decoration: none;
+    font-weight: 700;
 }
 </style>
 </head>
@@ -158,114 +192,123 @@ li {
 <div class="ambient-glow" id="ambientGlow"></div>
 
 <div class="header-content">
-<h1>Unlock Your Alter Ego</h1>
-<p class="subtext">In one reality you’re unstoppable. In this one, you just found your paddle.</p>
+    <h1>Unlock Your Alter Ego</h1>
+    <p class="subtext">In one reality you’re unstoppable. In this one, you just found your paddle.</p>
 </div>
 
 <div class="character-row">
-<div class="char-card" id="card-brine" onclick="selectCharacter('brine')">
-<img src="./image 3.png" alt="Brine">
-</div>
+    <div class="char-card" id="card-brine" onclick="selectCharacter('brine')">
+        <img src="./image 3.png" alt="Brine">
+    </div>
 
-<div class="char-card" id="card-maya" onclick="selectCharacter('maya')">
-<img src="./image 2.png" alt="Maya">
-</div>
+    <div class="char-card" id="card-maya" onclick="selectCharacter('maya')">
+        <img src="./image 2.png" alt="Maya">
+    </div>
 
-<div class="char-card" id="card-atlas" onclick="selectCharacter('atlas')">
-<img src="./Gemini_Generated_Image_8y02sz8y02sz8y02 1.png" alt="Atlas">
-</div>
+    <div class="char-card" id="card-atlas" onclick="selectCharacter('atlas')">
+        <img src="./Gemini_Generated_Image_8y02sz8y02sz8y02 1.png" alt="Atlas">
+    </div>
 </div>
 
 <div class="details-panel" id="detailsPanel">
-<div>
-<h3>Vibe Protocol</h3>
-<div class="vibe-text" id="vibeContent">Select a character</div>
-</div>
+    <div>
+        <h3>Vibe Protocol</h3>
+        <div class="vibe-text" id="vibeContent">Select a character</div>
+    </div>
 
-<div>
-<h3>System Capabilities</h3>
-<ul id="abilitiesContent"></ul>
-</div>
+    <div>
+        <h3>System Capabilities</h3>
+        <ul id="abilitiesContent"></ul>
+    </div>
 
-<div>
-<h3>Weapon of Choice</h3>
-<img id="paddleImg" class="paddle-preview-img" src="" />
-<div id="paddleName"></div>
-<div id="paddleDesc" style="color:var(--text-gray)"></div>
-<a href="#" class="btn-cta" id="ctaBtn">Initialize</a>
-</div>
+    <div>
+        <h3>Weapon of Choice</h3>
+        <img id="paddleImg" class="paddle-preview-img" src="">
+        <div id="paddleName"></div>
+        <div id="paddleDesc" style="color:var(--text-gray)"></div>
+        <a href="#" class="btn-cta" id="ctaBtn">Initialize</a>
+    </div>
 </div>
 
 </section>
 
 <script>
 const data = {
-brine: {
-    color: "#3b82f6",
-    paddleImg: "./blue_paddle.png",
-    vibe: "Plays loud. Ends points early.",
-    abilities: [
-        ["Hit First", "Power solves most problems"],
-        ["Own the Net", "Step in, stay in"],
-        ["No Mercy Mode", "When it’s on, it’s over"]
-    ],
-    paddleName: "BRINE / POWER CORE",
-    paddleDesc: "Built for players who finish rallies fast.",
-    cta: "Get Brine Paddle"
-},
-maya: {
-    color: "#84cc16",
-    paddleImg: "./green_paddle.png",
-    vibe: "Plays smart. Wins pretty.",
-    abilities: [
-        ["Make It Curve", "Spin does the talking"],
-        ["New Tricks", "Keeps them guessing"],
-        ["Win Pretty", "Angles over force"]
-    ],
-    paddleName: "MAYA / SPIN LAB",
-    paddleDesc: "Designed for spin and deception.",
-    cta: "Get Maya Paddle"
-},
-atlas: {
-    color: "#ef4444",
-    paddleImg: "./RedPaddlee.png",
-    vibe: "Plays calm. Never cracks.",
-    abilities: [
-        ["Iron Defense", "Returns everything"],
-        ["Court Cover", "Always in position"],
-        ["Endurance", "Wins the long game"]
-    ],
-    paddleName: "ATLAS / CONTROL BLOCK",
-    paddleDesc: "Stable, forgiving, consistent.",
-    cta: "Get Atlas Paddle"
-}
+    brine: {
+        color: "#3b82f6",
+        paddleImg: "./blue_paddle.png",
+        vibe: "Plays loud. Ends points early.",
+        abilities: [
+            ["Hit First", "Power solves most problems"],
+            ["Own the Net", "Step in, stay in"],
+            ["No Mercy Mode", "When it’s on, it’s over"]
+        ],
+        paddleName: "BRINE / POWER CORE",
+        paddleDesc: "Built for players who finish rallies fast.",
+        cta: "Get Brine Paddle"
+    },
+    maya: {
+        color: "#84cc16",
+        paddleImg: "./green_paddle.png",
+        vibe: "Plays smart. Wins pretty.",
+        abilities: [
+            ["Make It Curve", "Spin does the talking"],
+            ["New Tricks", "Keeps them guessing"],
+            ["Win Pretty", "Angles over force"]
+        ],
+        paddleName: "MAYA / SPIN LAB",
+        paddleDesc: "Designed for spin and deception.",
+        cta: "Get Maya Paddle"
+    },
+    atlas: {
+        color: "#ef4444",
+        paddleImg: "./RedPaddlee.png",
+        vibe: "Plays calm. Never cracks.",
+        abilities: [
+            ["Iron Defense", "Returns everything"],
+            ["Court Cover", "Always in position"],
+            ["Endurance", "Wins the long game"]
+        ],
+        paddleName: "ATLAS / CONTROL BLOCK",
+        paddleDesc: "Stable, forgiving, consistent.",
+        cta: "Get Atlas Paddle"
+    }
 };
 
 function selectCharacter(key) {
-const d = data[key];
-document.querySelectorAll(".char-card").forEach(c=>{
-c.classList.toggle("active", c.id === `card-${key}`);
-c.classList.toggle("inactive", c.id !== `card-${key}`);
-});
+    const d = data[key];
 
-document.getElementById("vibeContent").innerText = d.vibe;
+    document.querySelectorAll(".char-card").forEach(card => {
+        card.classList.toggle("active", card.id === `card-${key}`);
+        card.classList.toggle("inactive", card.id !== `card-${key}`);
+    });
 
-const ul = document.getElementById("abilitiesContent");
-ul.innerHTML = "";
-d.abilities.forEach(a=>{
-ul.innerHTML += `<li><span class="ability-name" style="color:${d.color}">${a[0]}</span> — ${a[1]}</li>`;
-});
+    const glow = document.getElementById("ambientGlow");
+    glow.style.background =
+        `radial-gradient(circle at center, ${d.color}33 0%, transparent 65%)`;
 
-const img = document.getElementById("paddleImg");
-img.src = d.paddleImg;
+    document.getElementById("vibeContent").innerText = d.vibe;
 
-document.getElementById("paddleName").innerText = d.paddleName;
-document.getElementById("paddleName").style.color = d.color;
-document.getElementById("paddleDesc").innerText = d.paddleDesc;
-document.getElementById("ctaBtn").innerText = d.cta;
+    const ul = document.getElementById("abilitiesContent");
+    ul.innerHTML = "";
+    d.abilities.forEach(a => {
+        ul.innerHTML += `<li><span class="ability-name" style="color:${d.color}">${a[0]}</span> — ${a[1]}</li>`;
+    });
 
-document.getElementById("detailsPanel").classList.add("visible");
+    const img = document.getElementById("paddleImg");
+    img.style.animation = "none";
+    img.src = d.paddleImg;
+    img.offsetHeight;
+    img.style.animation = "fadeInPaddle 0.5s forwards";
+
+    document.getElementById("paddleName").innerText = d.paddleName;
+    document.getElementById("paddleName").style.color = d.color;
+    document.getElementById("paddleDesc").innerText = d.paddleDesc;
+    document.getElementById("ctaBtn").innerText = d.cta;
+
+    document.getElementById("detailsPanel").classList.add("visible");
 }
 </script>
+
 </body>
 </html>
